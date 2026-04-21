@@ -8,6 +8,7 @@ from fastapi import (
     File,
     Form,
     HTTPException,
+    Query,
     UploadFile,
     status,
 )
@@ -17,7 +18,8 @@ from app.config import get_settings
 from app.deps import get_current_user, get_db, require_role
 from app.models.user import User
 from app.oss import storage
-from app.schemas.content import ContentDetail
+from app.schemas.common import Page
+from app.schemas.content import ContentDetail, ContentSummary, ContentUpdateIn
 from app.services import contents as cs
 from app.services.audit import write_audit
 from app.services.upload_validation import (
@@ -105,14 +107,6 @@ async def upload_content(
         visibility=c.visibility,
         status=c.status,
     )
-
-
-# --- Task 9 endpoints below ---
-
-from fastapi import Query
-
-from app.schemas.common import Page
-from app.schemas.content import ContentSummary, ContentUpdateIn
 
 
 @router.get("", response_model=Page[ContentSummary])
