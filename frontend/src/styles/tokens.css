@@ -1,0 +1,66 @@
+:root {
+  color-scheme: light;
+
+  /* Base palette */
+  --color-bg: #ffffff;
+  --color-bg-soft: #f7f8fa;
+  --color-divider: #ebedf0;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #6e6e73;
+  --color-text-tertiary: #a1a1a6;
+
+  /* Brand: fresh teal */
+  --color-brand: #06b6a4;
+  --color-brand-hover: #04a092;
+  --color-brand-pressed: #038a7d;
+  --color-brand-soft: #e6f8f5;
+
+  /* Status */
+  --color-success: #34c759;
+  --color-warning: #ff9f0a;
+  --color-danger:  #ff3b30;
+  --color-info:    #6e6e73;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Helvetica Neue", "Segoe UI", "Noto Sans CJK SC", sans-serif;
+  --font-size-h1: 28px;
+  --font-size-h2: 22px;
+  --font-size-h3: 18px;
+  --font-size-body: 14px;
+  --font-size-secondary: 13px;
+  --font-size-caption: 12px;
+  --line-height-base: 1.5;
+
+  /* Radii */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-input: 8px;
+  --radius-chip: 6px;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Layout */
+  --layout-header-h: 56px;
+  --layout-sidebar-w: 220px;
+  --layout-content-pad: 32px;
+
+  /* Controls */
+  --control-h: 36px;
+  --control-h-primary: 40px;
+
+  /* Shadows: minimal */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Motion */
+  --motion-fast: 150ms ease-out;
+  --motion-modal: 200ms ease-out;
+}
