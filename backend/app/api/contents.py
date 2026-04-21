@@ -138,7 +138,7 @@ async def list_mine(
     return Page[ContentSummary](items=items, total=total, page=page, size=size)
 
 
-@router.get("/{content_id}", response_model=ContentDetail)
+@router.get("/{content_id:int}", response_model=ContentDetail)
 async def detail(
     content_id: int,
     db: AsyncSession = Depends(get_db),
@@ -159,7 +159,7 @@ async def detail(
     )
 
 
-@router.patch("/{content_id}", response_model=ContentDetail)
+@router.patch("/{content_id:int}", response_model=ContentDetail)
 async def patch_content(
     content_id: int,
     data: ContentUpdateIn,
@@ -191,7 +191,7 @@ async def patch_content(
     )
 
 
-@router.delete("/{content_id}", status_code=204)
+@router.delete("/{content_id:int}", status_code=204)
 async def delete_content(
     content_id: int,
     db: AsyncSession = Depends(get_db),
@@ -205,3 +205,77 @@ async def delete_content(
     await cs.soft_delete(db, c)
     await write_audit(db, actor_id=user.id, action="content.delete", target_type="content", target_id=c.id)
     await db.commit()
+
+
+@router.get(
+    "/admin/all",
+    response_model=Page[ContentSummary],
+    dependencies=[Depends(require_role("admin"))],
+)
+async def admin_list(
+    q: str | None = None,
+    tag: str | None = None,
+    status_: str | None = Query(default=None, alias="status"),
+    page: int = 1,
+    size: int = 24,
+    db: AsyncSession = Depends(get_db),
+    actor: User = Depends(require_role("admin")),
+) -> Page[ContentSummary]:
+    from sqlalchemy import select, func
+    from sqlalchemy.orm import selectinload
+    from app.models.content import Content
+    from app.models.tag import ContentTag, Tag
+
+    base = select(Content).options(selectinload(Content.tags))
+    cnt = select(func.count(Content.id))
+    if q:
+        base = base.where(Content.title.ilike(f"%{q}%"))
+        cnt = cnt.where(Content.title.ilike(f"%{q}%"))
+    if tag:
+        sub = select(ContentTag.content_id).join(
+            Tag, Tag.id == ContentTag.tag_id
+        ).where(Tag.name == tag)
+        base = base.where(Content.id.in_(sub))
+        cnt = cnt.where(Content.id.in_(sub))
+    if status_:
+        base = base.where(Content.status == status_)
+        cnt = cnt.where(Content.status == status_)
+    base = base.order_by(Content.created_at.desc()).offset((page - 1) * size).limit(size)
+    rows = (await db.execute(base)).scalars().all()
+    total = (await db.execute(cnt)).scalar_one()
+    items = [ContentSummary(**(await cs.to_summary_dict(db, r))) for r in rows]
+    return Page[ContentSummary](items=items, total=total, page=page, size=size)
+
+
+@router.post(
+    "/{content_id:int}/restore",
+    response_model=ContentDetail,
+    dependencies=[Depends(require_role("admin"))],
+)
+async def restore(
+    content_id: int,
+    db: AsyncSession = Depends(get_db),
+    actor: User = Depends(require_role("admin")),
+) -> ContentDetail:
+    from app.models.content import Content
+    c = await db.get(Content, content_id)
+    if not c:
+        raise HTTPException(404, "content not found")
+    c.status = "active"
+    await write_audit(
+        db, actor_id=actor.id, action="content.restore",
+        target_type="content", target_id=c.id,
+    )
+    await db.commit()
+    # Reload with tags eagerly loaded for summary serialization
+    c = await cs.get_active(db, c.id)
+    summary = await cs.to_summary_dict(db, c)
+    return ContentDetail(
+        **summary,
+        description=c.description,
+        original_filename=c.original_filename,
+        content_type=c.content_type,
+        sha256=c.sha256,
+        visibility=c.visibility,
+        status=c.status,
+    )
