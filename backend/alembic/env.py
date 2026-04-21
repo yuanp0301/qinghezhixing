@@ -10,6 +10,9 @@ from app.models.base import Base
 # 后续 plan 2/3 会在此导入更多模型，以填充 metadata
 from app.models import user as _user  # noqa: F401
 from app.models import audit_log as _audit  # noqa: F401
+from app.models import content as _content  # noqa: F401
+from app.models import tag as _tag  # noqa: F401
+from app.models import view_log as _view  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().database_url)
