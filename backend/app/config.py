@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     oss_region: str
     upload_max_bytes: int = 10 * 1024 * 1024
 
+    share_min_seconds: int = 300
+    share_max_seconds: int = 30 * 24 * 3600
+    share_default_seconds: int = 24 * 3600
+    share_rate_limit_per_min: int = 60
+    public_base_url: str = "http://localhost:8000"
+
     @field_validator("app_secret_key")
     @classmethod
     def secret_long_enough(cls, v: str) -> str:
