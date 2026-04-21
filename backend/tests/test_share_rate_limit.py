@@ -9,7 +9,7 @@ async def test_share_endpoint_rate_limits(client, monkeypatch):
     monkeypatch.setattr(
         share_public.settings, "share_rate_limit_per_min", 2
     )
-    await rl.reset("share-ip:testclient")
+    await rl.reset("share-ip:127.0.0.1")
 
     for _ in range(2):
         r = await client.get("/s/doesnotmatter")
