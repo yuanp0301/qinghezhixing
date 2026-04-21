@@ -105,3 +105,109 @@ async def upload_content(
         visibility=c.visibility,
         status=c.status,
     )
+
+
+# --- Task 9 endpoints below ---
+
+from fastapi import Query
+
+from app.schemas.common import Page
+from app.schemas.content import ContentSummary, ContentUpdateIn
+
+
+@router.get("", response_model=Page[ContentSummary])
+async def list_public(
+    q: str | None = None,
+    tag: str | None = None,
+    order: str = Query(default="newest", pattern="^(newest|oldest)$"),
+    page: int = 1,
+    size: int = Query(default=24, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> Page[ContentSummary]:
+    rows, total = await cs.list_public(db, q=q, tag=tag, order=order, page=page, size=size)
+    items = [ContentSummary(**(await cs.to_summary_dict(db, r))) for r in rows]
+    return Page[ContentSummary](items=items, total=total, page=page, size=size)
+
+
+@router.get("/mine", response_model=Page[ContentSummary])
+async def list_mine(
+    q: str | None = None,
+    tag: str | None = None,
+    page: int = 1,
+    size: int = 24,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(require_role("creator", "admin")),
+) -> Page[ContentSummary]:
+    rows, total = await cs.list_mine(db, user_id=user.id, q=q, tag=tag, page=page, size=size)
+    items = [ContentSummary(**(await cs.to_summary_dict(db, r))) for r in rows]
+    return Page[ContentSummary](items=items, total=total, page=page, size=size)
+
+
+@router.get("/{content_id}", response_model=ContentDetail)
+async def detail(
+    content_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> ContentDetail:
+    c = await cs.get_active(db, content_id)
+    if not c:
+        raise HTTPException(404, "content not found")
+    summary = await cs.to_summary_dict(db, c)
+    return ContentDetail(
+        **summary,
+        description=c.description,
+        original_filename=c.original_filename,
+        content_type=c.content_type,
+        sha256=c.sha256,
+        visibility=c.visibility,
+        status=c.status,
+    )
+
+
+@router.patch("/{content_id}", response_model=ContentDetail)
+async def patch_content(
+    content_id: int,
+    data: ContentUpdateIn,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> ContentDetail:
+    c = await cs.get_active(db, content_id)
+    if not c:
+        raise HTTPException(404, "content not found")
+    if c.uploader_id != user.id and user.role != "admin":
+        raise HTTPException(403, "forbidden")
+    if data.tags is not None and len(data.tags) > 10:
+        raise HTTPException(422, "too many tags")
+    await cs.update_content(
+        db, content=c, title=data.title, description=data.description, tags=data.tags,
+    )
+    await write_audit(db, actor_id=user.id, action="content.update", target_type="content", target_id=c.id)
+    await db.commit()
+    c = await cs.get_active(db, c.id)
+    summary = await cs.to_summary_dict(db, c)
+    return ContentDetail(
+        **summary,
+        description=c.description,
+        original_filename=c.original_filename,
+        content_type=c.content_type,
+        sha256=c.sha256,
+        visibility=c.visibility,
+        status=c.status,
+    )
+
+
+@router.delete("/{content_id}", status_code=204)
+async def delete_content(
+    content_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> None:
+    c = await cs.get_active(db, content_id)
+    if not c:
+        raise HTTPException(404, "content not found")
+    if c.uploader_id != user.id and user.role != "admin":
+        raise HTTPException(403, "forbidden")
+    await cs.soft_delete(db, c)
+    await write_audit(db, actor_id=user.id, action="content.delete", target_type="content", target_id=c.id)
+    await db.commit()
