@@ -13,6 +13,7 @@ dependencies = [
     "alembic>=1.13",
     "redis>=5.0",
     "passlib[bcrypt]>=1.7.4",
+    "bcrypt<5",
     "python-multipart>=0.0.9",
     "structlog>=24.1",
 ]
