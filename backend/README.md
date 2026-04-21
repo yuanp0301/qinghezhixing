@@ -27,5 +27,14 @@
 - `GET  /api/tags`
 - `GET/POST/PATCH/DELETE /api/admin/tags` + `POST /api/admin/tags/{id}/merge`
 - `GET  /api/contents/admin/all` / `POST /api/contents/{id}/restore`（admin）
+- `POST   /api/contents/{id}/shares`（生成分发链接）
+- `GET    /api/contents/{id}/shares`（本人或 admin）
+- `DELETE /api/shares/{token}`（撤销）
+- `GET    /api/shares/{token}/logs`
+- `GET    /s/{token}`（站外入口，统一失效页）
+- `GET    /view-share/{token}`（沙箱观看）
+- `GET    /d/{token}`（下载，受 allow_download 控制）
+
+限流：按 IP 每分钟 `SHARE_RATE_LIMIT_PER_MIN` 次，超出返 429。
 
 后续 plan 在此补 shares。
