@@ -14,6 +14,14 @@ class Settings(BaseSettings):
     session_ttl_seconds: int = 43200  # 12h
     log_level: str = "INFO"
 
+    oss_endpoint: str
+    oss_internal_endpoint: str = ""
+    oss_bucket: str
+    oss_access_key_id: str
+    oss_access_key_secret: str
+    oss_region: str
+    upload_max_bytes: int = 10 * 1024 * 1024
+
     @field_validator("app_secret_key")
     @classmethod
     def secret_long_enough(cls, v: str) -> str:

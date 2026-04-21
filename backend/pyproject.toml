@@ -16,6 +16,8 @@ dependencies = [
     "bcrypt<5",
     "python-multipart>=0.0.9",
     "structlog>=24.1",
+    "oss2>=2.18",
+    "aiofiles>=23.2",
 ]
 
 [project.optional-dependencies]
@@ -27,6 +29,9 @@ dev = [
     "mypy>=1.9",
     "types-passlib",
 ]
+
+[tool.setuptools]
+packages = ["app"]
 
 [tool.ruff]
 line-length = 100
