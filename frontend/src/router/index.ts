@@ -23,6 +23,11 @@ export const router = createRouter({
           name: "contents",
           component: () => import("@/views/ContentsView.vue"),
         },
+        {
+          path: ":id(\\d+)",
+          name: "content-detail",
+          component: () => import("@/views/ContentDetailView.vue"),
+        },
       ],
     },
     {
