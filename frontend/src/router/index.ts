@@ -30,6 +30,12 @@ export const router = createRouter({
           meta: { requiresRole: "creator" },
         },
         {
+          path: "new",
+          name: "content-new",
+          component: () => import("@/views/ContentUploadView.vue"),
+          meta: { requiresRole: "creator" },
+        },
+        {
           path: ":id(\\d+)",
           name: "content-detail",
           component: () => import("@/views/ContentDetailView.vue"),
