@@ -43,6 +43,31 @@ export const router = createRouter({
       ],
     },
     {
+      path: "/admin",
+      component: () => import("@/layouts/AppLayout.vue"),
+      meta: { requiresRole: "admin" },
+      children: [
+        {
+          path: "contents",
+          name: "admin-contents",
+          component: () => import("@/views/admin/AdminContentsView.vue"),
+          meta: { requiresRole: "admin", title: "全部内容" },
+        },
+        {
+          path: "users",
+          name: "admin-users",
+          component: () => import("@/views/admin/AdminUsersView.vue"),
+          meta: { requiresRole: "admin", title: "用户管理" },
+        },
+        {
+          path: "tags",
+          name: "admin-tags",
+          component: () => import("@/views/admin/AdminTagsView.vue"),
+          meta: { requiresRole: "admin", title: "标签管理" },
+        },
+      ],
+    },
+    {
       path: "/:pathMatch(.*)*",
       redirect: "/contents",
     },
