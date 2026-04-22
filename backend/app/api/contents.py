@@ -105,7 +105,6 @@ async def upload_content(
         content_type=c.content_type,
         sha256=c.sha256,
         visibility=c.visibility,
-        status=c.status,
     )
 
 
@@ -155,7 +154,6 @@ async def detail(
         content_type=c.content_type,
         sha256=c.sha256,
         visibility=c.visibility,
-        status=c.status,
     )
 
 
@@ -187,7 +185,6 @@ async def patch_content(
         content_type=c.content_type,
         sha256=c.sha256,
         visibility=c.visibility,
-        status=c.status,
     )
 
 
@@ -277,5 +274,4 @@ async def restore(
         content_type=c.content_type,
         sha256=c.sha256,
         visibility=c.visibility,
-        status=c.status,
     )

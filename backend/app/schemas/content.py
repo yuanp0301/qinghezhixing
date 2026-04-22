@@ -10,6 +10,7 @@ class ContentSummary(BaseModel):
     uploader_username: str
     created_at: str
     size_bytes: int
+    status: str
     tags: list[TagOut]
 
     class Config:
@@ -22,7 +23,6 @@ class ContentDetail(ContentSummary):
     content_type: str
     sha256: str
     visibility: str
-    status: str
 
 
 class ContentUpdateIn(BaseModel):

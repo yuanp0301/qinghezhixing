@@ -20,6 +20,7 @@ export interface ContentSummary {
   created_at: string;
   size_bytes: number;
   tags: Tag[];
+  status?: "active" | "deleted";
 }
 
 export interface ContentDetail extends ContentSummary {

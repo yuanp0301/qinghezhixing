@@ -180,5 +180,6 @@ async def to_summary_dict(
         "uploader_username": uploader_username,
         "created_at": c.created_at.isoformat(),
         "size_bytes": c.size_bytes,
+        "status": c.status,
         "tags": [{"id": t.id, "name": t.name} for t in c.tags],
     }
