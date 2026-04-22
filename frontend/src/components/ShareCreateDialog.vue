@@ -33,13 +33,16 @@ const expiresInSeconds = computed(() => {
   return Math.max(300, Math.min(2592000, customN.value * m));
 });
 
-watch(() => props.modelValue, (v) => {
-  if (v) {
-    result.value = null;
-    choice.value = 86400;
-    allowDownload.value = false;
-  }
-});
+watch(
+  () => props.modelValue,
+  (v) => {
+    if (v) {
+      result.value = null;
+      choice.value = 86400;
+      allowDownload.value = false;
+    }
+  },
+);
 
 async function onSubmit() {
   submitting.value = true;
@@ -66,26 +69,48 @@ async function copy(text: string) {
 <template>
   <el-dialog
     :model-value="modelValue"
-    @update:model-value="(v: boolean) => emit('update:modelValue', v)"
     :title="result ? '链接已生成' : '生成分发链接'"
     width="520"
+    @update:model-value="(v: boolean) => emit('update:modelValue', v)"
   >
     <div v-if="!result">
       <el-form label-position="top">
         <el-form-item label="有效期">
           <el-radio-group v-model="choice">
             <el-radio
-              v-for="p in PRESETS" :key="p.label"
+              v-for="p in PRESETS"
+              :key="p.label"
               :value="p.seconds"
-            >{{ p.label }}</el-radio>
+            >
+              {{ p.label }}
+            </el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="choice === -1" label="自定义时长">
-          <el-input-number v-model="customN" :min="1" :max="30" />
-          <el-select v-model="customUnit" style="width: 100px; margin-left: 8px">
-            <el-option label="分钟" value="minute" />
-            <el-option label="小时" value="hour" />
-            <el-option label="天" value="day" />
+        <el-form-item
+          v-if="choice === -1"
+          label="自定义时长"
+        >
+          <el-input-number
+            v-model="customN"
+            :min="1"
+            :max="30"
+          />
+          <el-select
+            v-model="customUnit"
+            style="width: 100px; margin-left: 8px"
+          >
+            <el-option
+              label="分钟"
+              value="minute"
+            />
+            <el-option
+              label="小时"
+              value="hour"
+            />
+            <el-option
+              label="天"
+              value="day"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="允许下载原文件">
@@ -97,26 +122,45 @@ async function copy(text: string) {
       </el-form>
     </div>
 
-    <div v-else class="result">
-      <el-input :model-value="result.url" readonly />
+    <div
+      v-else
+      class="result"
+    >
+      <el-input
+        :model-value="result.url"
+        readonly
+      />
       <div class="row">
-        <el-button @click="copy(result.url)">复制链接</el-button>
+        <el-button @click="copy(result.url)">
+          复制链接
+        </el-button>
         <el-button @click="copy(`${result.url}\n有效期至 ${result.expires_at}`)">
           复制链接和有效期
         </el-button>
       </div>
-      <p class="hint">链接将在 {{ result.expires_at }} 过期</p>
+      <p class="hint">
+        链接将在 {{ result.expires_at }} 过期
+      </p>
     </div>
 
     <template #footer>
       <template v-if="!result">
-        <el-button @click="emit('update:modelValue', false)">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="onSubmit">
+        <el-button @click="emit('update:modelValue', false)">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="onSubmit"
+        >
           生成
         </el-button>
       </template>
       <template v-else>
-        <el-button type="primary" @click="emit('update:modelValue', false)">
+        <el-button
+          type="primary"
+          @click="emit('update:modelValue', false)"
+        >
           完成
         </el-button>
       </template>
@@ -126,8 +170,17 @@ async function copy(text: string) {
 
 <style scoped>
 .hint {
-  color: var(--color-text-secondary); font-size: 12px; margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
 }
-.result { display: flex; flex-direction: column; gap: 12px; }
-.row { display: flex; gap: 8px; }
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row {
+  display: flex;
+  gap: 8px;
+}
 </style>

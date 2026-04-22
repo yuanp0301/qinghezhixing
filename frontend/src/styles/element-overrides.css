@@ -9,8 +9,8 @@
 
   --el-color-success: var(--color-success);
   --el-color-warning: var(--color-warning);
-  --el-color-danger:  var(--color-danger);
-  --el-color-info:    var(--color-info);
+  --el-color-danger: var(--color-danger);
+  --el-color-info: var(--color-info);
 
   --el-text-color-primary: var(--color-text);
   --el-text-color-regular: var(--color-text);
@@ -48,6 +48,7 @@
   box-shadow: 0 0 0 1px var(--color-divider) inset !important;
   border-radius: var(--radius-input);
 }
-.el-table th, .el-table td {
+.el-table th,
+.el-table td {
   border-bottom: 1px solid var(--color-divider);
 }

@@ -3,9 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 
 const PUBLIC = new Set(["login"]);
 
-function requiredRole(
-  to: RouteLocationNormalized,
-): "admin" | "creator" | null {
+function requiredRole(to: RouteLocationNormalized): "admin" | "creator" | null {
   const m = to.meta as { requiresRole?: "admin" | "creator" };
   return m.requiresRole ?? null;
 }
@@ -33,10 +31,7 @@ export function installGuards(router: Router) {
     if (need === "admin" && auth.user.role !== "admin") {
       return "/contents";
     }
-    if (
-      need === "creator" &&
-      !["creator", "admin"].includes(auth.user.role)
-    ) {
+    if (need === "creator" && !["creator", "admin"].includes(auth.user.role)) {
       return "/contents";
     }
     return true;

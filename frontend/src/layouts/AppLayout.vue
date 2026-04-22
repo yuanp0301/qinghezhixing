@@ -45,7 +45,10 @@ async function onLogout() {
 <template>
   <div class="layout">
     <header class="topbar">
-      <router-link to="/contents" class="brand-link">
+      <router-link
+        to="/contents"
+        class="brand-link"
+      >
         <BrandLogo />
       </router-link>
       <div class="spacer" />
@@ -61,7 +64,10 @@ async function onLogout() {
             <el-dropdown-item disabled>
               {{ auth.user?.role }}
             </el-dropdown-item>
-            <el-dropdown-item divided @click="onLogout">
+            <el-dropdown-item
+              divided
+              @click="onLogout"
+            >
               退出登录
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -91,52 +97,87 @@ async function onLogout() {
 </template>
 
 <style scoped>
-.layout { min-height: 100vh; display: flex; flex-direction: column; }
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 .topbar {
   height: var(--layout-header-h);
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-divider);
-  display: flex; align-items: center;
+  display: flex;
+  align-items: center;
   padding: 0 var(--space-5);
   gap: var(--space-4);
 }
-.brand-link { color: inherit; }
-.spacer { flex: 1; }
+.brand-link {
+  color: inherit;
+}
+.spacer {
+  flex: 1;
+}
 .user-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  cursor: pointer; padding: 4px 8px; border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 20px;
 }
-.user-chip:hover { background: var(--color-bg-soft); }
+.user-chip:hover {
+  background: var(--color-bg-soft);
+}
 .avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: var(--color-brand-soft); color: var(--color-brand);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 500;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
 }
-.username { color: var(--color-text-secondary); font-size: 13px; }
+.username {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
 
-.body { flex: 1; display: flex; }
+.body {
+  flex: 1;
+  display: flex;
+}
 .sidebar {
   width: var(--layout-sidebar-w);
   background: var(--color-bg);
   border-right: 1px solid var(--color-divider);
   padding: var(--space-4) 0;
 }
-.sidebar nav { display: flex; flex-direction: column; }
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
 .nav-item {
-  display: block; padding: 10px var(--space-5);
+  display: block;
+  padding: 10px var(--space-5);
   color: var(--color-text-secondary);
   border-left: 2px solid transparent;
   transition: var(--motion-fast);
 }
-.nav-item:hover { background: var(--color-bg-soft); color: var(--color-text); }
+.nav-item:hover {
+  background: var(--color-bg-soft);
+  color: var(--color-text);
+}
 .nav-item.active {
   color: var(--color-brand);
   border-left-color: var(--color-brand);
   background: var(--color-brand-soft);
 }
 .content {
-  flex: 1; padding: var(--layout-content-pad);
+  flex: 1;
+  padding: var(--layout-content-pad);
   background: var(--color-bg-soft);
   overflow-y: auto;
 }

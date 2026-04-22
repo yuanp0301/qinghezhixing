@@ -4,5 +4,8 @@
   </div>
 </template>
 <style scoped>
-.blank { min-height: 100vh; background: var(--color-bg-soft); }
+.blank {
+  min-height: 100vh;
+  background: var(--color-bg-soft);
+}
 </style>

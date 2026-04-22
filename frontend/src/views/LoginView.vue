@@ -50,7 +50,10 @@ async function onSubmit() {
         :closable="false"
         show-icon
       />
-      <el-form @submit.prevent="onSubmit" label-position="top">
+      <el-form
+        label-position="top"
+        @submit.prevent="onSubmit"
+      >
         <el-form-item label="用户名">
           <el-input
             v-model="username"
@@ -72,13 +75,15 @@ async function onSubmit() {
         <el-button
           type="primary"
           :loading="submitting"
-          @click="onSubmit"
           style="width: 100%; height: var(--control-h-primary)"
+          @click="onSubmit"
         >
           登录
         </el-button>
       </el-form>
-      <p class="hint">如需账号，请联系管理员。</p>
+      <p class="hint">
+        如需账号，请联系管理员。
+      </p>
     </div>
   </div>
 </template>
@@ -86,23 +91,30 @@ async function onSubmit() {
 <style scoped>
 .page {
   min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-bg-soft);
 }
 .card {
-  width: 400px; padding: 32px;
+  width: 400px;
+  padding: 32px;
   background: var(--color-bg);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  display: flex; flex-direction: column; gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 h1 {
   font-size: var(--font-size-h2);
-  font-weight: 500; margin: 0;
+  font-weight: 500;
+  margin: 0;
 }
 .hint {
   color: var(--color-text-secondary);
   font-size: var(--font-size-secondary);
-  margin: 0; text-align: center;
+  margin: 0;
+  text-align: center;
 }
 </style>

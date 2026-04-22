@@ -74,43 +74,74 @@ onMounted(load);
 </script>
 
 <template>
-  <div v-if="!data" class="empty-wrap">
+  <div
+    v-if="!data"
+    class="empty-wrap"
+  >
     <el-empty description="内容不存在或已被删除">
-      <el-button @click="router.push('/contents')">返回公开库</el-button>
+      <el-button @click="router.push('/contents')">
+        返回公开库
+      </el-button>
     </el-empty>
   </div>
 
   <div v-else>
     <div class="breadcrumb">
-      <router-link to="/contents">公开库</router-link>
+      <router-link to="/contents">
+        公开库
+      </router-link>
       <span> / </span>
       <span>{{ data.title }}</span>
     </div>
 
     <div class="title-row">
       <h1>{{ data.title }}</h1>
-      <div v-if="canManage" class="actions">
-        <el-button @click="showEdit = true">编辑</el-button>
-        <el-button type="primary" @click="showShare = true">
+      <div
+        v-if="canManage"
+        class="actions"
+      >
+        <el-button @click="showEdit = true">
+          编辑
+        </el-button>
+        <el-button
+          type="primary"
+          @click="showShare = true"
+        >
           生成分发链接
         </el-button>
-        <el-button type="danger" plain @click="onDelete">删除</el-button>
+        <el-button
+          type="danger"
+          plain
+          @click="onDelete"
+        >
+          删除
+        </el-button>
       </div>
     </div>
 
     <div class="meta">
       <span>{{ data.uploader_username }}</span>
-      <span>·</span><span>{{ formatAbs(data.created_at) }}</span>
-      <span>·</span><span>{{ formatBytes(data.size_bytes) }}</span>
-      <span>·</span><span>{{ data.original_filename }}</span>
+      <span>·</span><span>{{ formatAbs(data.created_at) }}</span> <span>·</span><span>{{ formatBytes(data.size_bytes) }}</span> <span>·</span><span>{{ data.original_filename }}</span>
     </div>
-    <TagChips :tags="data.tags" @click="(t) => router.push({
-      path: '/contents', query: { tag: t.name }
-    })" />
+    <TagChips
+      :tags="data.tags"
+      @click="
+        (t) =>
+          router.push({
+            path: '/contents',
+            query: { tag: t.name },
+          })
+      "
+    />
 
     <HtmlSandboxFrame :src="`/view/${data.id}`" />
 
-    <p v-if="data.description" class="desc">{{ data.description }}</p>
+    <p
+      v-if="data.description"
+      class="desc"
+    >
+      {{ data.description }}
+    </p>
 
     <ShareLinkList
       v-if="canManage"
@@ -119,57 +150,101 @@ onMounted(load);
     />
 
     <el-drawer
-      v-model="showEdit" title="编辑内容" size="440"
+      v-model="showEdit"
+      title="编辑内容"
+      size="440"
       :destroy-on-close="true"
     >
-      <el-form label-position="top" @submit.prevent="onSaveEdit">
+      <el-form
+        label-position="top"
+        @submit.prevent="onSaveEdit"
+      >
         <el-form-item label="标题">
-          <el-input v-model="editForm.title" maxlength="100" />
+          <el-input
+            v-model="editForm.title"
+            maxlength="100"
+          />
         </el-form-item>
         <el-form-item label="标签">
           <el-select
             v-model="editForm.tags"
-            multiple filterable allow-create default-first-option
+            multiple
+            filterable
+            allow-create
+            default-first-option
             style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="简介">
           <el-input
-            v-model="editForm.description" type="textarea"
-            :rows="4" maxlength="500" show-word-limit
+            v-model="editForm.description"
+            type="textarea"
+            :rows="4"
+            maxlength="500"
+            show-word-limit
           />
         </el-form-item>
-        <el-button type="primary" @click="onSaveEdit">保存</el-button>
+        <el-button
+          type="primary"
+          @click="onSaveEdit"
+        >
+          保存
+        </el-button>
       </el-form>
     </el-drawer>
 
     <ShareCreateDialog
       v-model="showShare"
       :content-id="data.id"
-      @created="() => { /* 列表自刷新 */ }"
+      @created="
+        () => {
+          /* 列表自刷新 */
+        }
+      "
     />
   </div>
 </template>
 
 <style scoped>
-.empty-wrap { display: flex; justify-content: center; padding: 64px; }
-.breadcrumb {
-  margin-bottom: 8px; color: var(--color-text-secondary); font-size: 13px;
+.empty-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 64px;
 }
-.breadcrumb a { color: var(--color-text-secondary); }
+.breadcrumb {
+  margin-bottom: 8px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.breadcrumb a {
+  color: var(--color-text-secondary);
+}
 .title-row {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 8px;
 }
-h1 { font-size: var(--font-size-h1); margin: 0; font-weight: 500; }
-.actions { display: flex; gap: 8px; }
+h1 {
+  font-size: var(--font-size-h1);
+  margin: 0;
+  font-weight: 500;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
 .meta {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  color: var(--color-text-secondary); font-size: 13px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: var(--color-text-secondary);
+  font-size: 13px;
   margin-bottom: 8px;
 }
 .desc {
-  margin: 16px 0; white-space: pre-wrap;
+  margin: 16px 0;
+  white-space: pre-wrap;
   color: var(--color-text);
 }
 </style>

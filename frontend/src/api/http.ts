@@ -15,9 +15,7 @@ http.interceptors.response.use(
     const status = err.response?.status;
     if (status === 401 && !isRedirectingToLogin) {
       isRedirectingToLogin = true;
-      const next = encodeURIComponent(
-        location.pathname + location.search,
-      );
+      const next = encodeURIComponent(location.pathname + location.search);
       location.assign(`/login?next=${next}`);
       return Promise.reject(err);
     }

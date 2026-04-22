@@ -1,9 +1,5 @@
 import { http } from "./http";
-import type {
-  ContentDetail,
-  ContentSummary,
-  Page,
-} from "@/types/models";
+import type { ContentDetail, ContentSummary, Page } from "@/types/models";
 
 export interface ListParams {
   q?: string;
@@ -20,9 +16,7 @@ export async function listPublic(
   return r.data;
 }
 
-export async function listMine(
-  params: ListParams = {},
-): Promise<Page<ContentSummary>> {
+export async function listMine(params: ListParams = {}): Promise<Page<ContentSummary>> {
   const r = await http.get("/api/contents/mine", { params });
   return r.data;
 }

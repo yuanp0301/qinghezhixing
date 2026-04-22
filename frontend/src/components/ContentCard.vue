@@ -10,16 +10,28 @@ const emit = defineEmits<{
 }>();
 </script>
 <template>
-  <article class="card" @click="emit('click')">
+  <article
+    class="card"
+    @click="emit('click')"
+  >
     <div class="thumb">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
-        stroke="#a1a1a6" stroke-width="1.5" stroke-linecap="round"
-        stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <path d="M14 2v6h6"/>
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#a1a1a6"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <path d="M14 2v6h6" />
       </svg>
     </div>
-    <h3 class="title">{{ item.title }}</h3>
+    <h3 class="title">
+      {{ item.title }}
+    </h3>
     <div class="meta">
       <span>{{ item.uploader_username }}</span>
       <span>·</span>
@@ -38,7 +50,9 @@ const emit = defineEmits<{
   border: 1px solid var(--color-divider);
   border-radius: var(--radius-card);
   padding: 16px;
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   transition: var(--motion-fast);
   cursor: pointer;
 }
@@ -47,16 +61,24 @@ const emit = defineEmits<{
   transform: translateY(-1px);
 }
 .thumb {
-  height: 96px; border-radius: 8px;
+  height: 96px;
+  border-radius: 8px;
   background: var(--color-bg-soft);
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .title {
-  margin: 0; font-size: 15px; font-weight: 500;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .meta {
-  display: flex; gap: 6px;
+  display: flex;
+  gap: 6px;
   color: var(--color-text-secondary);
   font-size: 12px;
 }

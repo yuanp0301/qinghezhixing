@@ -1,10 +1,7 @@
 import { http } from "./http";
 import type { User } from "@/types/models";
 
-export async function login(
-  username: string,
-  password: string,
-): Promise<User> {
+export async function login(username: string, password: string): Promise<User> {
   const r = await http.post("/api/auth/login", { username, password });
   return r.data.user;
 }

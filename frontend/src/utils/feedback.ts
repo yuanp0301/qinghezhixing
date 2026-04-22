@@ -20,8 +20,7 @@ export async function confirm(
       confirmButtonText: confirmText,
       cancelButtonText: "取消",
       type: type === "danger" ? "warning" : "warning",
-      confirmButtonClass:
-        type === "danger" ? "el-button--danger" : undefined,
+      confirmButtonClass: type === "danger" ? "el-button--danger" : undefined,
     });
     return true;
   } catch {

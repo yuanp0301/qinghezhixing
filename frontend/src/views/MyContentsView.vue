@@ -51,7 +51,10 @@ async function onDelete(it: ContentSummary) {
   reload();
 }
 
-watch([q, tag], () => { page.value = 1; reload(); });
+watch([q, tag], () => {
+  page.value = 1;
+  reload();
+});
 watch(page, reload);
 onMounted(async () => {
   tags.value = await listTags().catch(() => []);
@@ -60,19 +63,40 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageHeader title="我的上传" :subtitle="`共 ${total} 条`">
+  <PageHeader
+    title="我的上传"
+    :subtitle="`共 ${total} 条`"
+  >
     <template #actions>
-      <el-button type="primary" @click="router.push('/contents/new')">
+      <el-button
+        type="primary"
+        @click="router.push('/contents/new')"
+      >
         上传
       </el-button>
     </template>
   </PageHeader>
 
   <div class="toolbar">
-    <el-input v-model="q" placeholder="搜索标题" style="width: 320px" clearable />
-    <el-select v-model="tag" placeholder="标签筛选" clearable filterable
-      style="width: 200px">
-      <el-option v-for="t in tags" :key="t.id" :label="t.name" :value="t.name"/>
+    <el-input
+      v-model="q"
+      placeholder="搜索标题"
+      style="width: 320px"
+      clearable
+    />
+    <el-select
+      v-model="tag"
+      placeholder="标签筛选"
+      clearable
+      filterable
+      style="width: 200px"
+    >
+      <el-option
+        v-for="t in tags"
+        :key="t.id"
+        :label="t.name"
+        :value="t.name"
+      />
     </el-select>
   </div>
 
@@ -81,41 +105,90 @@ onMounted(async () => {
       v-if="!loading && items.length === 0"
       title="还没有上传过互动动画"
     >
-      <el-button type="primary" @click="router.push('/contents/new')">上传</el-button>
+      <el-button
+        type="primary"
+        @click="router.push('/contents/new')"
+      >
+        上传
+      </el-button>
     </EmptyState>
 
-    <el-table v-else :data="items" stripe>
+    <el-table
+      v-else
+      :data="items"
+      stripe
+    >
       <el-table-column label="标题">
         <template #default="{ row }">
-          <a class="link" @click="router.push(`/contents/${row.id}`)">
+          <a
+            class="link"
+            @click="router.push(`/contents/${row.id}`)"
+          >
             {{ row.title }}
           </a>
         </template>
       </el-table-column>
       <el-table-column label="标签">
         <template #default="{ row }">
-          <TagChips :tags="row.tags" :max="3" />
+          <TagChips
+            :tags="row.tags"
+            :max="3"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="大小" width="100">
-        <template #default="{ row }">{{ formatBytes(row.size_bytes) }}</template>
-      </el-table-column>
-      <el-table-column label="创建时间" width="170">
-        <template #default="{ row }">{{ formatAbs(row.created_at) }}</template>
-      </el-table-column>
-      <el-table-column label="操作" width="220">
+      <el-table-column
+        label="大小"
+        width="100"
+      >
         <template #default="{ row }">
-          <el-button link @click="router.push(`/contents/${row.id}`)">观看</el-button>
-          <el-button link @click="router.push(`/contents/${row.id}?edit=1`)">编辑</el-button>
-          <el-button link type="danger" @click="onDelete(row)">删除</el-button>
+          {{ formatBytes(row.size_bytes) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="创建时间"
+        width="170"
+      >
+        <template #default="{ row }">
+          {{ formatAbs(row.created_at) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        width="220"
+      >
+        <template #default="{ row }">
+          <el-button
+            link
+            @click="router.push(`/contents/${row.id}`)"
+          >
+            观看
+          </el-button>
+          <el-button
+            link
+            @click="router.push(`/contents/${row.id}?edit=1`)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="onDelete(row)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <div class="pager" v-if="total > size">
+    <div
+      v-if="total > size"
+      class="pager"
+    >
       <el-pagination
-        background layout="prev, pager, next"
-        :total="total" :page-size="size"
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :page-size="size"
         :current-page="page"
         @current-change="(p: number) => (page = p)"
       />
@@ -124,7 +197,18 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.toolbar { display: flex; gap: 12px; margin-bottom: var(--space-5); }
-.link { color: var(--color-brand); cursor: pointer; }
-.pager { display: flex; justify-content: center; margin-top: 16px; }
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: var(--space-5);
+}
+.link {
+  color: var(--color-brand);
+  cursor: pointer;
+}
+.pager {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
 </style>

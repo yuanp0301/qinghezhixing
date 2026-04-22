@@ -5,15 +5,11 @@ export async function createShare(
   contentId: number,
   payload: { expires_in_seconds: number; allow_download: boolean },
 ): Promise<ShareLink> {
-  const r = await http.post(
-    `/api/contents/${contentId}/shares`, payload,
-  );
+  const r = await http.post(`/api/contents/${contentId}/shares`, payload);
   return r.data;
 }
 
-export async function listShares(
-  contentId: number,
-): Promise<ShareLink[]> {
+export async function listShares(contentId: number): Promise<ShareLink[]> {
   const r = await http.get(`/api/contents/${contentId}/shares`);
   return r.data;
 }

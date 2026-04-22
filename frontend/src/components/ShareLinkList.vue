@@ -67,7 +67,9 @@ const STATE_TYPE: Record<ShareLink["state"], string> = {
   revoked: "danger",
 };
 const STATE_LABEL: Record<ShareLink["state"], string> = {
-  active: "有效", expired: "已过期", revoked: "已撤销",
+  active: "有效",
+  expired: "已过期",
+  revoked: "已撤销",
 };
 
 onMounted(reload);
@@ -78,60 +80,110 @@ watch(() => props.refreshKey, reload);
   <section class="block">
     <header @click="expanded = !expanded">
       <h3>分发链接（{{ stats.total }}）</h3>
-      <span class="stat">
-        有效 {{ stats.valid }} / 总 {{ stats.total }}
-      </span>
-      <el-button link @click.stop="expanded = !expanded">
+      <span class="stat"> 有效 {{ stats.valid }} / 总 {{ stats.total }} </span>
+      <el-button
+        link
+        @click.stop="expanded = !expanded"
+      >
         {{ expanded ? "收起" : "展开" }}
       </el-button>
     </header>
 
-    <div v-if="expanded" v-loading="loading" class="body">
-      <el-table :data="items" v-if="items.length">
-        <el-table-column label="链接" width="200">
+    <div
+      v-if="expanded"
+      v-loading="loading"
+      class="body"
+    >
+      <el-table
+        v-if="items.length"
+        :data="items"
+      >
+        <el-table-column
+          label="链接"
+          width="200"
+        >
           <template #default="{ row }">
             <el-tooltip :content="row.url">
-              <span class="link" @click="copy(row.url)">
+              <span
+                class="link"
+                @click="copy(row.url)"
+              >
                 /s/{{ shortToken(row.token) }}
               </span>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="90">
+        <el-table-column
+          label="状态"
+          width="90"
+        >
           <template #default="{ row }">
-            <el-tag :type="STATE_TYPE[row.state as ShareLink['state']] as any" size="small">
-              {{ STATE_LABEL[row.state as ShareLink['state']] }}
+            <el-tag
+              :type="STATE_TYPE[row.state as ShareLink['state']] as any"
+              size="small"
+            >
+              {{ STATE_LABEL[row.state as ShareLink["state"]] }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="倒计时" width="120">
+        <el-table-column
+          label="倒计时"
+          width="120"
+        >
           <template #default="{ row }">
             <span v-if="row.state === 'active'">
               {{ remainingText(row.expires_at) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="允许下载" width="90">
+        <el-table-column
+          label="允许下载"
+          width="90"
+        >
           <template #default="{ row }">
             {{ row.allow_download ? "是" : "否" }}
           </template>
         </el-table-column>
-        <el-table-column label="生成时间" width="170">
-          <template #default="{ row }">{{ formatAbs(row.created_at) }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column
+          label="生成时间"
+          width="170"
+        >
           <template #default="{ row }">
-            <el-button link @click="copy(row.url)">复制</el-button>
-            <el-button link @click="openLogs(row)">访问记录</el-button>
+            {{ formatAbs(row.created_at) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="180"
+        >
+          <template #default="{ row }">
             <el-button
-              link type="danger"
+              link
+              @click="copy(row.url)"
+            >
+              复制
+            </el-button>
+            <el-button
+              link
+              @click="openLogs(row)"
+            >
+              访问记录
+            </el-button>
+            <el-button
+              link
+              type="danger"
               :disabled="row.state !== 'active'"
               @click="revoke(row)"
-            >撤销</el-button>
+            >
+              撤销
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-empty v-else description="还没有生成分发链接" />
+      <el-empty
+        v-else
+        description="还没有生成分发链接"
+      />
     </div>
 
     <ShareAccessDrawer
@@ -150,14 +202,26 @@ watch(() => props.refreshKey, reload);
   padding: 16px 20px;
 }
 header {
-  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
 }
 header h3 {
-  margin: 0; font-size: 15px; font-weight: 500;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
 }
 .stat {
-  margin-left: auto; color: var(--color-text-secondary); font-size: 12px;
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  font-size: 12px;
 }
-.body { margin-top: 12px; }
-.link { color: var(--color-brand); cursor: pointer; }
+.body {
+  margin-top: 12px;
+}
+.link {
+  color: var(--color-brand);
+  cursor: pointer;
+}
 </style>
