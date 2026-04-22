@@ -24,6 +24,12 @@ export const router = createRouter({
           component: () => import("@/views/ContentsView.vue"),
         },
         {
+          path: "mine",
+          name: "my-contents",
+          component: () => import("@/views/MyContentsView.vue"),
+          meta: { requiresRole: "creator" },
+        },
+        {
           path: ":id(\\d+)",
           name: "content-detail",
           component: () => import("@/views/ContentDetailView.vue"),
