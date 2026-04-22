@@ -56,3 +56,55 @@ export interface ShareAccessLog {
   user_agent: string | null;
   result: "success" | "expired" | "revoked" | "not_found";
 }
+
+// ---- Admin back-office types ----
+
+export interface UserAdmin {
+  id: number;
+  username: string;
+  role: Role;
+  status: "active" | "disabled";
+  note: string | null;
+  last_login_at: string | null;
+  created_at: string;
+}
+
+export interface UserCreatePayload {
+  username: string;
+  password: string;
+  role: Role;
+  note?: string | null;
+}
+
+export interface UserUpdatePayload {
+  role?: Role;
+  status?: "active" | "disabled";
+  note?: string | null;
+}
+
+export interface PasswordResetResult {
+  new_password: string;
+}
+
+export interface TagAdmin {
+  id: number;
+  name: string;
+  content_count: number;
+  created_at: string;
+}
+
+export interface AdminUserQuery {
+  q?: string;
+  role?: Role;
+  status?: "active" | "disabled";
+  page?: number;
+  size?: number;
+}
+
+export interface AdminContentQuery {
+  q?: string;
+  tag?: string;
+  status?: "active" | "deleted";
+  page?: number;
+  size?: number;
+}
