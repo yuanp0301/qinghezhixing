@@ -19,7 +19,7 @@ export async function confirm(
     await ElMessageBox.confirm(message, title, {
       confirmButtonText: confirmText,
       cancelButtonText: "取消",
-      type: type === "danger" ? "warning" : "warning",
+      type: "warning",
       confirmButtonClass: type === "danger" ? "el-button--danger" : undefined,
     });
     return true;

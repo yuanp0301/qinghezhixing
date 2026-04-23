@@ -216,30 +216,10 @@ async def admin_list(
     page: int = 1,
     size: int = 24,
     db: AsyncSession = Depends(get_db),
-    actor: User = Depends(require_role("admin")),
 ) -> Page[ContentSummary]:
-    from sqlalchemy import select, func
-    from sqlalchemy.orm import selectinload
-    from app.models.content import Content
-    from app.models.tag import ContentTag, Tag
-
-    base = select(Content).options(selectinload(Content.tags))
-    cnt = select(func.count(Content.id))
-    if q:
-        base = base.where(Content.title.ilike(f"%{q}%"))
-        cnt = cnt.where(Content.title.ilike(f"%{q}%"))
-    if tag:
-        sub = select(ContentTag.content_id).join(
-            Tag, Tag.id == ContentTag.tag_id
-        ).where(Tag.name == tag)
-        base = base.where(Content.id.in_(sub))
-        cnt = cnt.where(Content.id.in_(sub))
-    if status_:
-        base = base.where(Content.status == status_)
-        cnt = cnt.where(Content.status == status_)
-    base = base.order_by(Content.created_at.desc()).offset((page - 1) * size).limit(size)
-    rows = (await db.execute(base)).scalars().all()
-    total = (await db.execute(cnt)).scalar_one()
+    rows, total = await cs.list_admin(
+        db, q=q, tag=tag, status_=status_, page=page, size=size
+    )
     items = [ContentSummary(**(await cs.to_summary_dict(db, r))) for r in rows]
     return Page[ContentSummary](items=items, total=total, page=page, size=size)
 

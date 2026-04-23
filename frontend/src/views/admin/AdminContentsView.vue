@@ -2,6 +2,8 @@
 import { onMounted, ref } from "vue";
 import { ElMessageBox } from "element-plus";
 import PageHeader from "@/components/PageHeader.vue";
+import ShareCreateDialog from "@/components/ShareCreateDialog.vue";
+import OfflineOpenLogsDialog from "@/components/OfflineOpenLogsDialog.vue";
 import TagChips from "@/components/TagChips.vue";
 import { listAdminContents, restoreContent } from "@/api/admin";
 import { removeContent } from "@/api/contents";
@@ -16,6 +18,9 @@ const page = ref(1);
 const pageSize = 20;
 const q = ref("");
 const status = ref<"active" | "deleted" | undefined>();
+const showShare = ref(false);
+const activeContentId = ref<number | null>(null);
+const showOfflineLogs = ref(false);
 
 async function reload() {
   loading.value = true;
@@ -56,6 +61,16 @@ async function onRestore(row: ContentSummary) {
   await restoreContent(row.id);
   toastSuccess("已恢复");
   reload();
+}
+
+function onCreateShare(row: ContentSummary) {
+  activeContentId.value = row.id;
+  showShare.value = true;
+}
+
+function onOfflineLogs(row: ContentSummary) {
+  activeContentId.value = row.id;
+  showOfflineLogs.value = true;
 }
 
 function onPageChange(p: number) {
@@ -101,6 +116,14 @@ onMounted(reload);
       :data="rows"
       stripe
     >
+      <el-table-column
+        label="ID"
+        width="90"
+      >
+        <template #default="{ row }">
+          {{ row.id }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="标题"
         min-width="240"
@@ -158,7 +181,7 @@ onMounted(reload);
       </el-table-column>
       <el-table-column
         label="操作"
-        width="160"
+        width="330"
         fixed="right"
       >
         <template #default="{ row }">
@@ -172,6 +195,22 @@ onMounted(reload);
           </el-button>
           <el-button
             v-else
+            link
+            type="primary"
+            @click="onCreateShare(row)"
+          >
+            生成分享链接
+          </el-button>
+          <el-button
+            v-if="row.status !== 'deleted'"
+            link
+            type="primary"
+            @click="onOfflineLogs(row)"
+          >
+            下载使用记录
+          </el-button>
+          <el-button
+            v-if="row.status !== 'deleted'"
             link
             type="danger"
             @click="onDelete(row)"
@@ -189,6 +228,17 @@ onMounted(reload);
       :total="total"
       layout="prev, pager, next, total"
       @current-change="onPageChange"
+    />
+
+    <ShareCreateDialog
+      v-if="activeContentId !== null"
+      v-model="showShare"
+      :content-id="activeContentId"
+    />
+    <OfflineOpenLogsDialog
+      v-if="activeContentId !== null"
+      v-model="showOfflineLogs"
+      :content-id="activeContentId"
     />
   </div>
 </template>

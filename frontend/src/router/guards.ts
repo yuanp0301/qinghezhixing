@@ -11,9 +11,11 @@ function requiredRole(to: RouteLocationNormalized): "admin" | "creator" | null {
 export function installGuards(router: Router) {
   router.beforeEach(async (to) => {
     const auth = useAuthStore();
-    await auth.ensureLoaded();
 
     if (PUBLIC.has(String(to.name))) {
+      // Public routes should not force an auth probe,
+      // otherwise unauthenticated users can be trapped in 401 redirects.
+      if (!auth.ready) return true;
       // already logged in => redirect away from login
       if (auth.user && to.name === "login") {
         const next = (to.query.next as string) || "/contents";
@@ -21,6 +23,8 @@ export function installGuards(router: Router) {
       }
       return true;
     }
+
+    await auth.ensureLoaded();
 
     if (!auth.user) {
       const next = encodeURIComponent(to.fullPath);

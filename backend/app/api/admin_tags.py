@@ -24,7 +24,6 @@ router = APIRouter(
 async def list_(
     q: str | None = None,
     db: AsyncSession = Depends(get_db),
-    actor: User = Depends(require_role("admin")),
 ):
     rows = await svc.list_admin(db, q=q)
     return [

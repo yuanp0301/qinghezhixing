@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { createShare } from "@/api/shares";
+import { useAuthStore } from "@/stores/auth";
 import type { ShareLink } from "@/types/models";
 import { toastError, toastSuccess } from "@/utils/feedback";
 
@@ -24,8 +25,10 @@ const choice = ref(86400);
 const customN = ref(30);
 const customUnit = ref<"minute" | "hour" | "day">("minute");
 const allowDownload = ref(false);
+const userInfo = ref("");
 const submitting = ref(false);
 const result = ref<ShareLink | null>(null);
+const auth = useAuthStore();
 
 const expiresInSeconds = computed(() => {
   if (choice.value !== -1) return choice.value;
@@ -40,16 +43,22 @@ watch(
       result.value = null;
       choice.value = 86400;
       allowDownload.value = false;
+      userInfo.value = auth.user?.username ?? "";
     }
   },
 );
 
 async function onSubmit() {
+  if (!userInfo.value.trim()) {
+    toastError("请填写用户信息");
+    return;
+  }
   submitting.value = true;
   try {
     const s = await createShare(props.contentId, {
       expires_in_seconds: expiresInSeconds.value,
       allow_download: allowDownload.value,
+      user_info: userInfo.value.trim(),
     });
     result.value = s;
     emit("created", s);
@@ -118,6 +127,13 @@ async function copy(text: string) {
           <div class="hint">
             开启后，访客除了在线观看还可下载 HTML 源文件
           </div>
+        </el-form-item>
+        <el-form-item label="用户信息">
+          <el-input
+            v-model="userInfo"
+            maxlength="64"
+            placeholder="请输入用户信息"
+          />
         </el-form-item>
       </el-form>
     </div>

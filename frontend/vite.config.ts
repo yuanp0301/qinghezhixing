@@ -12,8 +12,8 @@ export default defineConfig({
     proxy: {
       "/api":   "http://localhost:8000",
       "/view":  "http://localhost:8000",
-      "/s":     "http://localhost:8000",
-      "/d":     "http://localhost:8000",
+      "/s/":    "http://localhost:8000",
+      "/d/":    "http://localhost:8000",
       "/view-share": "http://localhost:8000",
       "/health": "http://localhost:8000",
     },

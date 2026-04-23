@@ -133,6 +133,38 @@ async def list_mine(
     return rows, total
 
 
+async def list_admin(
+    db: AsyncSession,
+    *,
+    q: str | None,
+    tag: str | None,
+    status_: str | None,
+    page: int,
+    size: int,
+) -> tuple[Sequence[Content], int]:
+    base = select(Content).options(selectinload(Content.tags))
+    cnt = select(func.count(Content.id))
+    if q:
+        like = f"%{q}%"
+        base = base.where(Content.title.ilike(like))
+        cnt = cnt.where(Content.title.ilike(like))
+    if tag:
+        sub = select(ContentTag.content_id).join(
+            Tag, Tag.id == ContentTag.tag_id
+        ).where(Tag.name == tag)
+        base = base.where(Content.id.in_(sub))
+        cnt = cnt.where(Content.id.in_(sub))
+    if status_:
+        base = base.where(Content.status == status_)
+        cnt = cnt.where(Content.status == status_)
+    base = base.order_by(Content.created_at.desc()).offset(
+        (page - 1) * size
+    ).limit(size)
+    rows = (await db.execute(base)).scalars().all()
+    total = (await db.execute(cnt)).scalar_one()
+    return rows, total
+
+
 async def update_content(
     db: AsyncSession,
     *,

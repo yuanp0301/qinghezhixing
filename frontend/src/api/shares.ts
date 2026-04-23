@@ -1,9 +1,13 @@
 import { http } from "./http";
-import type { Page, ShareAccessLog, ShareLink } from "@/types/models";
+import type { OfflineOpenLog, Page, ShareAccessLog, ShareLink } from "@/types/models";
 
 export async function createShare(
   contentId: number,
-  payload: { expires_in_seconds: number; allow_download: boolean },
+  payload: {
+    expires_in_seconds: number;
+    allow_download: boolean;
+    user_info: string;
+  },
 ): Promise<ShareLink> {
   const r = await http.post(`/api/contents/${contentId}/shares`, payload);
   return r.data;
@@ -24,6 +28,17 @@ export async function listShareLogs(
   size = 20,
 ): Promise<Page<ShareAccessLog>> {
   const r = await http.get(`/api/shares/${token}/logs`, {
+    params: { page, size },
+  });
+  return r.data;
+}
+
+export async function listOfflineOpens(
+  contentId: number,
+  page = 1,
+  size = 20,
+): Promise<Page<OfflineOpenLog>> {
+  const r = await http.get(`/api/contents/${contentId}/offline-opens`, {
     params: { page, size },
   });
   return r.data;

@@ -13,7 +13,11 @@ http.interceptors.response.use(
   (r) => r,
   (err: AxiosError<any>) => {
     const status = err.response?.status;
-    if (status === 401 && !isRedirectingToLogin) {
+    if (
+      status === 401 &&
+      !isRedirectingToLogin &&
+      !location.pathname.startsWith("/login")
+    ) {
       isRedirectingToLogin = true;
       const next = encodeURIComponent(location.pathname + location.search);
       location.assign(`/login?next=${next}`);

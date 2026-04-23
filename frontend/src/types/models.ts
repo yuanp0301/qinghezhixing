@@ -58,6 +58,15 @@ export interface ShareAccessLog {
   result: "success" | "expired" | "revoked" | "not_found";
 }
 
+export interface OfflineOpenLog {
+  token: string;
+  user_info: string | null;
+  opened_at: string | null;
+  reported_at: string;
+  is_offline_replay: boolean;
+  user_agent: string | null;
+}
+
 // ---- Admin back-office types ----
 
 export interface UserAdmin {

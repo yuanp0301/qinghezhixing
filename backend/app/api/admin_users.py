@@ -40,7 +40,6 @@ async def list_users(
     page: int = 1,
     size: int = 20,
     db: AsyncSession = Depends(get_db),
-    actor: User = Depends(require_role("admin")),
 ) -> Page[UserAdminOut]:
     rows, total = await svc.list_users(
         db, q=q, role=role, status_=status_, page=page, size=size

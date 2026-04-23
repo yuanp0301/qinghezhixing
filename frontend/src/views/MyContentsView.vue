@@ -7,6 +7,7 @@ import type { ContentSummary, Tag } from "@/types/models";
 import PageHeader from "@/components/PageHeader.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import TagChips from "@/components/TagChips.vue";
+import OfflineOpenLogsDialog from "@/components/OfflineOpenLogsDialog.vue";
 import { confirm, toastError, toastSuccess } from "@/utils/feedback";
 import { formatAbs, formatBytes } from "@/utils/time";
 
@@ -19,6 +20,8 @@ const q = ref("");
 const tag = ref("");
 const tags = ref<Tag[]>([]);
 const loading = ref(false);
+const showOfflineLogs = ref(false);
+const activeContentId = ref<number | null>(null);
 
 async function reload() {
   loading.value = true;
@@ -49,6 +52,11 @@ async function onDelete(it: ContentSummary) {
   await contentsApi.removeContent(it.id);
   toastSuccess("已删除");
   reload();
+}
+
+function onOfflineLogs(it: ContentSummary) {
+  activeContentId.value = it.id;
+  showOfflineLogs.value = true;
 }
 
 watch([q, tag], () => {
@@ -118,6 +126,14 @@ onMounted(async () => {
       :data="items"
       stripe
     >
+      <el-table-column
+        label="ID"
+        width="90"
+      >
+        <template #default="{ row }">
+          {{ row.id }}
+        </template>
+      </el-table-column>
       <el-table-column label="标题">
         <template #default="{ row }">
           <a
@@ -154,7 +170,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column
         label="操作"
-        width="220"
+        width="300"
       >
         <template #default="{ row }">
           <el-button
@@ -168,6 +184,13 @@ onMounted(async () => {
             @click="router.push(`/contents/${row.id}?edit=1`)"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="onOfflineLogs(row)"
+          >
+            下载使用记录
           </el-button>
           <el-button
             link
@@ -194,6 +217,12 @@ onMounted(async () => {
       />
     </div>
   </div>
+
+  <OfflineOpenLogsDialog
+    v-if="activeContentId !== null"
+    v-model="showOfflineLogs"
+    :content-id="activeContentId"
+  />
 </template>
 
 <style scoped>
