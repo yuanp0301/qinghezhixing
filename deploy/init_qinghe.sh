@@ -1,6 +1,6 @@
  #!/usr/bin/env bash\
-set -euo pipefail\
-\
+set -euo pipefail
+
 # ====== 可改参数（按需修改）======
 APP_DIR="/var/www/qinghezhixing"\
 BACKEND_DIR="$APP_DIR/backend"\
