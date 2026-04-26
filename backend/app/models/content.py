@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    BigInteger,
+    Integer,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -18,9 +18,9 @@ from app.models.base import Base
 class Content(Base):
     __tablename__ = "contents"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uploader_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("users.id"), nullable=False
+        Integer, ForeignKey("users.id"), nullable=False
     )
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
@@ -28,7 +28,7 @@ class Content(Base):
     oss_object_key: Mapped[str] = mapped_column(String(255), nullable=False)
     original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
     content_type: Mapped[str] = mapped_column(String(64), nullable=False)
-    size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
     sha256: Mapped[str] = mapped_column(String(64), nullable=False)
     visibility: Mapped[str] = mapped_column(
         String(32),
@@ -42,12 +42,12 @@ class Content(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=text("now()"),
+        server_default=text("CURRENT_TIMESTAMP"),
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=text("now()"),
+        server_default=text("CURRENT_TIMESTAMP"),
         nullable=False,
     )
 

@@ -22,11 +22,17 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _as_utc(dt: datetime) -> datetime:
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
 def state_of(sl: ShareLink, now: datetime | None = None) -> str:
-    t = now or _now()
+    t = _as_utc(now or _now())
     if sl.revoked_at is not None:
         return "revoked"
-    if sl.expires_at <= t:
+    if _as_utc(sl.expires_at) <= t:
         return "expired"
     return "active"
 

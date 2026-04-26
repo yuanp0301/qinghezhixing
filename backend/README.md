@@ -3,11 +3,10 @@
 ## 首次启动
 
 1. 复制环境变量：`cp .env.example .env`
-2. 起依赖：`docker compose up -d`
-3. 安装：`pip install -e ".[dev]"`
-4. 迁移：`alembic upgrade head`
-5. 建管理员：`python -m app.cli.seed_admin root 'admin'`
-6. 运行：`uvicorn app.main:app --reload`
+2. 安装：`pip install -e ".[dev]"`
+3. 迁移：`alembic upgrade head`
+4. 建管理员：`python -m app.cli.seed_admin root 'admin1234'`
+5. 运行：`uvicorn app.main:app --reload`
 
 ## 测试
 

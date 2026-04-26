@@ -2,7 +2,7 @@ def test_oss_settings(monkeypatch):
     monkeypatch.setenv("APP_SECRET_KEY", "x" * 32)
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://u:p@h:5432/d",
+        "sqlite+aiosqlite:///./data/test.db",
     )
     monkeypatch.setenv("OSS_ENDPOINT", "https://oss.example.com")
     monkeypatch.setenv("OSS_BUCKET", "b")

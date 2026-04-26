@@ -21,13 +21,13 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "share_keys",
-        sa.Column("id", sa.BigInteger(), nullable=False),
-        sa.Column("user_id", sa.BigInteger(), nullable=False),
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("key", sa.String(length=64), nullable=False),
         sa.Column("is_used", sa.Boolean(), server_default=sa.text("false"), nullable=False),
         sa.Column("used_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("use_mode", sa.String(length=16), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
         sa.CheckConstraint("use_mode IN ('preview','download')", name="ck_share_keys_use_mode"),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"]),
         sa.PrimaryKeyConstraint("id"),

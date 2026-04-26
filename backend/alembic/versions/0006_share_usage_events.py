@@ -9,7 +9,6 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -22,17 +21,17 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "share_usage_events",
-        sa.Column("id", sa.BigInteger(), nullable=False),
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("event_id", sa.String(length=64), nullable=False),
         sa.Column("token", sa.String(length=64), nullable=False),
-        sa.Column("content_id", sa.BigInteger(), nullable=True),
-        sa.Column("share_key_id", sa.BigInteger(), nullable=True),
+        sa.Column("content_id", sa.Integer(), nullable=True),
+        sa.Column("share_key_id", sa.Integer(), nullable=True),
         sa.Column("user_info", sa.String(length=64), nullable=True),
         sa.Column("opened_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("reported_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
+        sa.Column("reported_at", sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
         sa.Column("opened_via", sa.String(length=16), server_default=sa.text("'download'"), nullable=False),
         sa.Column("is_offline_replay", sa.Boolean(), server_default=sa.text("false"), nullable=False),
-        sa.Column("client_ip", postgresql.INET(), nullable=True),
+        sa.Column("client_ip", sa.String(length=45), nullable=True),
         sa.Column("user_agent", sa.String(length=255), nullable=True),
         sa.CheckConstraint("opened_via IN ('download')", name="ck_share_usage_events_opened_via"),
         sa.ForeignKeyConstraint(["share_key_id"], ["share_keys.id"]),
