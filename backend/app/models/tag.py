@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    BigInteger,
+    Integer,
     DateTime,
     ForeignKey,
     Index,
@@ -17,13 +17,13 @@ from app.models.base import Base
 class Tag(Base):
     __tablename__ = "tags"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(
         String(20), unique=True, nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=text("now()"),
+        server_default=text("CURRENT_TIMESTAMP"),
         nullable=False,
     )
 
@@ -37,11 +37,11 @@ class ContentTag(Base):
     __tablename__ = "content_tags"
 
     content_id: Mapped[int] = mapped_column(
-        BigInteger,
+        Integer,
         ForeignKey("contents.id", ondelete="CASCADE"),
     )
     tag_id: Mapped[int] = mapped_column(
-        BigInteger,
+        Integer,
         ForeignKey("tags.id", ondelete="CASCADE"),
     )
 

@@ -57,7 +57,8 @@ main.viewer iframe {
 
 def _remaining(expires_at: datetime) -> str:
     now = datetime.now(timezone.utc)
-    delta = expires_at - now
+    exp = expires_at if expires_at.tzinfo else expires_at.replace(tzinfo=timezone.utc)
+    delta = exp - now
     secs = int(delta.total_seconds())
     if secs <= 0:
         return "已过期"

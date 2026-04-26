@@ -7,7 +7,7 @@ def test_settings_reads_env(monkeypatch):
     monkeypatch.setenv("APP_SECRET_KEY", "x" * 32)
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://u:p@h:5432/d",
+        "sqlite+aiosqlite:///./data/test.db",
     )
     s = Settings()
     assert s.app_env == "test"
@@ -19,7 +19,7 @@ def test_settings_rejects_short_secret(monkeypatch):
     monkeypatch.setenv("APP_SECRET_KEY", "short")
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://u:p@h:5432/d",
+        "sqlite+aiosqlite:///./data/test.db",
     )
     try:
         Settings()
