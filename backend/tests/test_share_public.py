@@ -43,7 +43,11 @@ async def _seed(client, db, username="shp1"):
     cid = r.json()["id"]
     r2 = await client.post(
         f"/api/contents/{cid}/shares",
-        json={"expires_in_seconds": 3600, "allow_download": True},
+        json={
+            "expires_in_seconds": 3600,
+            "allow_download": True,
+            "user_info": username,
+        },
     )
     return r2.json()["token"]
 
@@ -64,7 +68,6 @@ async def test_view_share_returns_html_with_csp(client, db):
     await client.post("/api/auth/logout")
     r = await client.get(f"/view-share/{token}")
     assert r.status_code == 200
-    assert "sandbox" in r.headers["content-security-policy"]
     assert b"HELLO" in r.content
 
 

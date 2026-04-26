@@ -35,6 +35,6 @@
 - `GET    /view-share/{token}`（沙箱观看）
 - `GET    /d/{token}`（下载，受 allow_download 控制）
 
-限流：按 IP 每分钟 `SHARE_RATE_LIMIT_PER_MIN` 次，超出返 429。
+分发链接访问不再做 Redis 限流，统一按 token 状态（有效/过期/撤销）返回结果。
 
 后续 plan 在此补 shares。

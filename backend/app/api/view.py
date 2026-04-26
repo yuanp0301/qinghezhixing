@@ -13,9 +13,6 @@ from app.services import contents as cs
 router = APIRouter(tags=["view"])
 
 _HEADERS = {
-    "Content-Security-Policy": "sandbox allow-scripts allow-downloads;",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "no-referrer",
     "Cache-Control": "private, no-store",
 }
 

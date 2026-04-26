@@ -55,7 +55,6 @@ async def upload_content(
     try:
         info = validate_html_upload(
             filename=file.filename or "",
-            content_type=file.content_type or "",
             stream=file.file,
             max_bytes=settings.upload_max_bytes,
         )

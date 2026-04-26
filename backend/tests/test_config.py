@@ -9,7 +9,6 @@ def test_settings_reads_env(monkeypatch):
         "DATABASE_URL",
         "postgresql+asyncpg://u:p@h:5432/d",
     )
-    monkeypatch.setenv("REDIS_URL", "redis://h:6379/0")
     s = Settings()
     assert s.app_env == "test"
     assert s.session_cookie_name == "qh_session"
@@ -22,7 +21,6 @@ def test_settings_rejects_short_secret(monkeypatch):
         "DATABASE_URL",
         "postgresql+asyncpg://u:p@h:5432/d",
     )
-    monkeypatch.setenv("REDIS_URL", "redis://h:6379/0")
     try:
         Settings()
     except Exception as e:

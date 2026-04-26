@@ -23,13 +23,13 @@ async def get_current_user(
 ) -> User:
     if not qh_session:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "not authenticated")
-    data = await get_session(qh_session)
+    data = await get_session(db, qh_session)
     if not data:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "session expired")
     user = await db.get(User, data["user_id"])
     if not user or user.status != "active":
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "user inactive")
-    await touch_session(qh_session, settings.session_ttl_seconds)
+    await touch_session(db, qh_session, settings.session_ttl_seconds)
     return user
 
 

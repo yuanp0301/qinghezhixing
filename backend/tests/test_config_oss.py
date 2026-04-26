@@ -4,7 +4,6 @@ def test_oss_settings(monkeypatch):
         "DATABASE_URL",
         "postgresql+asyncpg://u:p@h:5432/d",
     )
-    monkeypatch.setenv("REDIS_URL", "redis://h:6379/0")
     monkeypatch.setenv("OSS_ENDPOINT", "https://oss.example.com")
     monkeypatch.setenv("OSS_BUCKET", "b")
     monkeypatch.setenv("OSS_ACCESS_KEY_ID", "id")

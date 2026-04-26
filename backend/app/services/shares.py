@@ -1,4 +1,3 @@
-import re
 import secrets
 import base64
 import hashlib
@@ -16,7 +15,6 @@ from app.models.share_key import ShareKey
 from app.models.share_link import ShareLink
 
 
-TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{22,64}$")
 _settings = get_settings()
 
 
@@ -120,8 +118,6 @@ class ValidationResult:
 async def validate_token(
     db: AsyncSession, token: str
 ) -> ValidationResult:
-    if not TOKEN_RE.match(token):
-        return ValidationResult(state="not_found")
     sl = await get_by_token(db, token)
     if not sl:
         return ValidationResult(state="not_found")

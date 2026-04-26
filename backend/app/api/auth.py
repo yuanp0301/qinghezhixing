@@ -42,7 +42,7 @@ async def login(
     if user.status != "active":
         raise HTTPException(status.HTTP_403_FORBIDDEN, "account disabled")
 
-    sid = await create_session(user.id, settings.session_ttl_seconds)
+    sid = await create_session(db, user.id, settings.session_ttl_seconds)
     _set_cookie(response, sid)
     user.last_login_at = datetime.utcnow()
     await write_audit(
@@ -57,9 +57,11 @@ async def login(
 async def logout(
     response: Response,
     qh_session: str | None = Cookie(default=None, alias="qh_session"),
+    db: AsyncSession = Depends(get_db),
 ) -> Response:
     if qh_session:
-        await delete_session(qh_session)
+        await delete_session(db, qh_session)
+        await db.commit()
     response.delete_cookie(settings.session_cookie_name, path="/")
     response.status_code = 204
     return response

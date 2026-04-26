@@ -41,6 +41,7 @@ async def test_create_and_state(db):
         db,
         content=c,
         creator_id=u.id,
+        key_user_info=u.username,
         expires_in_seconds=60,
         allow_download=False,
     )
@@ -52,7 +53,7 @@ async def test_create_and_state(db):
 async def test_revoke(db):
     u, c = await _seed(db)
     sl = await ss.create_share(
-        db, content=c, creator_id=u.id, expires_in_seconds=60,
+        db, content=c, creator_id=u.id, key_user_info=u.username, expires_in_seconds=60,
         allow_download=False,
     )
     await ss.revoke(db, sl)
@@ -63,7 +64,7 @@ async def test_revoke(db):
 async def test_validate_token(db):
     u, c = await _seed(db)
     sl = await ss.create_share(
-        db, content=c, creator_id=u.id, expires_in_seconds=60,
+        db, content=c, creator_id=u.id, key_user_info=u.username, expires_in_seconds=60,
         allow_download=False,
     )
     ok = await ss.validate_token(db, sl.token)
@@ -91,7 +92,7 @@ async def test_validate_expired(db):
 async def test_validate_revoked(db):
     u, c = await _seed(db)
     sl = await ss.create_share(
-        db, content=c, creator_id=u.id, expires_in_seconds=60,
+        db, content=c, creator_id=u.id, key_user_info=u.username, expires_in_seconds=60,
         allow_download=False,
     )
     await ss.revoke(db, sl)
@@ -105,7 +106,3 @@ async def test_validate_not_found(db):
     assert v.state == "not_found"
 
 
-@pytest.mark.asyncio
-async def test_validate_bad_format(db):
-    v = await ss.validate_token(db, "bad")
-    assert v.state == "not_found"

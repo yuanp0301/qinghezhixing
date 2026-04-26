@@ -8,7 +8,6 @@ class Settings(BaseSettings):
     app_env: str = "dev"
     app_secret_key: str
     database_url: str
-    redis_url: str
 
     session_cookie_name: str = "qh_session"
     session_ttl_seconds: int = 43200  # 12h
@@ -25,7 +24,6 @@ class Settings(BaseSettings):
     share_min_seconds: int = 300
     share_max_seconds: int = 30 * 24 * 3600
     share_default_seconds: int = 24 * 3600
-    share_rate_limit_per_min: int = 60
     public_base_url: str = "http://localhost:8000"
 
     @field_validator("app_secret_key")

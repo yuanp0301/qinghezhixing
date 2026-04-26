@@ -13,10 +13,8 @@ from app.models.share_usage_event import ShareUsageEvent
 from app.oss import storage
 from app.services import share_access as sa
 from app.services import shares as ss
-from app.services.rate_limit import check_and_bump
 from app.web.share_pages import (
     render_invalid_page,
-    render_rate_limited_page,
     render_valid_page,
 )
 
@@ -25,9 +23,6 @@ router = APIRouter(tags=["share-public"])
 
 
 _VIEW_HEADERS = {
-    "Content-Security-Policy": "sandbox allow-scripts allow-downloads;",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "no-referrer",
     "Cache-Control": "private, no-store",
 }
 _PIXEL_GIF = (
@@ -136,16 +131,6 @@ def _inject_tracking_script(html: str, token: str) -> str:
     return html + script
 
 
-async def _rate_limited(ip: str | None) -> bool:
-    if not ip:
-        return False
-    allowed = await check_and_bump(
-        f"share-ip:{ip}",
-        max_per_min=settings.share_rate_limit_per_min,
-    )
-    return not allowed
-
-
 @router.get("/s/{token}")
 async def share_entry(
     token: str,
@@ -153,9 +138,6 @@ async def share_entry(
     db: AsyncSession = Depends(get_db),
 ) -> Response:
     ip = _client_ip(request)
-    if await _rate_limited(ip):
-        return HTMLResponse(render_rate_limited_page(), status_code=429)
-
     res = await ss.validate_token(db, token)
     ua = request.headers.get("user-agent")
     if res.state != "valid":
@@ -194,8 +176,6 @@ async def _resolve_and_stream(
     disposition: str | None,
 ) -> Response:
     ip = _client_ip(request)
-    if await _rate_limited(ip):
-        return HTMLResponse(render_rate_limited_page(), status_code=429)
     res = await ss.validate_token(db, token)
     ua = request.headers.get("user-agent")
     if res.state != "valid":
@@ -264,8 +244,6 @@ async def download_share(
 ) -> Response:
     # Separate validation because we also enforce allow_download.
     ip = _client_ip(request)
-    if await _rate_limited(ip):
-        return HTMLResponse(render_rate_limited_page(), status_code=429)
     res = await ss.validate_token(db, token)
     ua = request.headers.get("user-agent")
     if res.state != "valid" or not res.share.allow_download:

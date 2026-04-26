@@ -17,6 +17,7 @@ from app.models import share_link as _sl  # noqa: F401
 from app.models import share_access_log as _sal  # noqa: F401
 from app.models import share_key as _sk  # noqa: F401
 from app.models import share_usage_event as _sue  # noqa: F401
+from app.models import user_session as _us  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().database_url)
