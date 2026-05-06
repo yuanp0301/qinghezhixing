@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { listShares, revokeShare } from "@/api/shares";
 import type { ShareLink } from "@/types/models";
 import { confirm, toastError, toastSuccess } from "@/utils/feedback";
+import { copyText } from "@/utils/clipboard";
 import { formatAbs, remainingText } from "@/utils/time";
 import ShareAccessDrawer from "./ShareAccessDrawer.vue";
 
@@ -34,8 +35,9 @@ async function reload() {
 }
 
 async function copy(url: string) {
-  await navigator.clipboard.writeText(url);
-  toastSuccess("已复制");
+  const ok = await copyText(url);
+  if (ok) toastSuccess("已复制");
+  else toastError("复制失败，请手动复制");
 }
 
 async function revoke(s: ShareLink) {

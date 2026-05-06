@@ -4,6 +4,7 @@ import { createShare } from "@/api/shares";
 import { useAuthStore } from "@/stores/auth";
 import type { ShareLink } from "@/types/models";
 import { toastError, toastSuccess } from "@/utils/feedback";
+import { copyText } from "@/utils/clipboard";
 
 const props = defineProps<{
   modelValue: boolean;
@@ -70,8 +71,9 @@ async function onSubmit() {
 }
 
 async function copy(text: string) {
-  await navigator.clipboard.writeText(text);
-  toastSuccess("已复制");
+  const ok = await copyText(text);
+  if (ok) toastSuccess("已复制");
+  else toastError("复制失败，请手动复制");
 }
 </script>
 

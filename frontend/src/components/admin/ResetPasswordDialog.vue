@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { resetUserPassword } from "@/api/admin";
 import { toastError, toastSuccess } from "@/utils/feedback";
+import { copyText } from "@/utils/clipboard";
 import type { UserAdmin } from "@/types/models";
 
 const props = defineProps<{ visible: boolean; user: UserAdmin | null }>();
@@ -28,12 +29,9 @@ function onClose() {
 
 async function copy() {
   if (!password.value) return;
-  try {
-    await navigator.clipboard.writeText(password.value);
-    toastSuccess("已复制");
-  } catch {
-    toastError("复制失败，请手动复制");
-  }
+  const ok = await copyText(password.value);
+  if (ok) toastSuccess("已复制");
+  else toastError("复制失败，请手动复制");
 }
 </script>
 

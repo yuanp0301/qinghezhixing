@@ -1,6 +1,6 @@
  #!/usr/bin/env bash\
-set -euo pipefail\
-\
+set -euo pipefail
+
 # ====== 可改参数（按需修改）======
 APP_DIR="/var/www/qinghezhixing"\
 BACKEND_DIR="$APP_DIR/backend"\
@@ -10,10 +10,9 @@ RUN_USER="www-data"         # CentOS 常见可改为 nginx
 RUN_GROUP="www-data"        # CentOS 常见可改为 nginx
 BACKEND_HOST="127.0.0.1"\
 BACKEND_PORT="8000"\
-PUBLIC_BASE_URL="http://47.118.30.132"   # YOUR_DOMAIN_OR_IP
+PUBLIC_BASE_URL="https://qinghe.school"   # YOUR_DOMAIN_OR_IP
 ADMIN_USER="root"\
 ADMIN_PASS='ChangeMe_2026!'                   # 必改强密码
-\
 # OSS
 OSS_ENDPOINT="oss-cn-shanghai.aliyuncs.com"\
 OSS_BUCKET="ss-pai-5txvgrigv5i1khj4ij-cn-shanghai"\
