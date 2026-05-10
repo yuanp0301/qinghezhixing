@@ -44,14 +44,15 @@ fi
 
 echo "[1/8] 安装系统依赖..."
 if command -v yum >/dev/null 2>&1; then
-  yum install -y git nginx python3 python3-pip python3-venv sqlite
+  yum install -y git nginx sqlite
+  yum install -y python3.11 2>/dev/null || true
   if ! command -v node >/dev/null 2>&1; then
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
     yum install -y nodejs
   fi
 elif command -v apt-get >/dev/null 2>&1; then
   apt-get update
-  apt-get install -y git nginx python3 python3-pip python3-venv sqlite3 curl
+  apt-get install -y git nginx sqlite3 curl python3.11 python3.11-venv python3.11-dev
   if ! command -v node >/dev/null 2>&1; then
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
     apt-get install -y nodejs
@@ -61,24 +62,34 @@ else
   exit 1
 fi
 
+PYBIN="$(command -v python3.11 || true)"
+if [[ -z "$PYBIN" ]]; then
+  echo "ERROR: 未找到 python3.11。请先安装 Python 3.11（见 deploy/ECS部署指南.md）后再运行本脚本。"
+  exit 1
+fi
+if ! "$PYBIN" -c 'import sys; assert sys.version_info[:2] == (3, 11)' 2>/dev/null; then
+  echo "ERROR: 需要 Python 3.11.x，当前: $($PYBIN --version)"
+  exit 1
+fi
+
 echo "[2/8] 确保运行用户存在..."
 if ! id -u "$RUN_USER" >/dev/null 2>&1; then
   useradd -r -s /sbin/nologin "$RUN_USER"
 fi
 
-echo "[3/8] 初始化后端虚拟环境与依赖（生产依赖，不含 dev）..."
+echo "[3/8] 初始化后端虚拟环境与依赖（requirements.txt）..."
 cd "$BACKEND_DIR"
-python3 -m venv venv
+"$PYBIN" -m venv venv
 # shellcheck disable=SC1091
 source venv/bin/activate
 pip install -U pip
-pip install -e .
+pip install -r requirements.txt
 
 _write_backend_env() {
   APP_SECRET_KEY="$1"
   export APP_SECRET_KEY
   export BACKEND_DIR
-  python3 <<'PY'
+  python <<'PY'
 import os
 from pathlib import Path
 
@@ -136,7 +147,7 @@ echo "[4/8] 写入后端 .env（SQLite）..."
 if [[ ! -f "$BACKEND_DIR/.env.example" ]]; then
   echo "WARN: 未找到 .env.example，仅写入运行所需变量"
 fi
-APP_SECRET_KEY="$(python3 -c "import secrets; print(secrets.token_urlsafe(48))")"
+APP_SECRET_KEY="$(python -c "import secrets; print(secrets.token_urlsafe(48))")"
 _write_backend_env "$APP_SECRET_KEY"
 
 mkdir -p "$BACKEND_DIR/data"
