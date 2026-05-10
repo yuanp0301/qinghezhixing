@@ -53,6 +53,26 @@
 - 入方向：80/443 对 0.0.0.0/0；22 仅运维 IP。
 - 出方向：默认放行（需访问 RDS 内网与 OSS 内网 endpoint）。
 
+## ECS 裸机 + SQLite（git clone + bash）
+
+适用于全新 ECS：仓库不含密钥，在服务器上单独维护 `deploy/init_qinghe.env`（已加入 `.gitignore`，勿提交）。
+
+```bash
+cd /var/www   # 示例
+git clone <repo_url> qinghezhixing
+cd qinghezhixing
+cp deploy/init_qinghe.env.example deploy/init_qinghe.env
+chmod 600 deploy/init_qinghe.env
+vim deploy/init_qinghe.env   # 填写 OSS、PUBLIC_BASE_URL、ADMIN_PASS 等
+
+sudo bash deploy/init_qinghe.sh
+# 可选：export INIT_QINGHE_ENV=/path/to/init_qinghe.env 指定配置文件路径
+```
+
+脚本会：安装依赖、`pip install -e .`（生产依赖）、生成 `backend/.env`（含随机 `APP_SECRET_KEY`）、`alembic upgrade head` 建表、`seed_admin`、构建前端、配置 systemd 与 Nginx。SQLite 数据文件在 `backend/data/`，与仓库隔离。
+
+若仓库中 **曾提交过带真实 AK/SK 的脚本**，请在 RAM 控制台 **轮换** 相关 AccessKey，勿复用已泄漏密钥。
+
 ## 部署步骤
 
 ```bash

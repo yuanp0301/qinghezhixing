@@ -22,8 +22,8 @@ def _set_cookie(resp: Response, sid: str) -> None:
         sid,
         max_age=settings.session_ttl_seconds,
         httponly=True,
-        samesite="lax",
-        secure=settings.app_env != "dev",
+        samesite=settings.session_cookie_samesite,
+        secure=settings.session_cookie_use_secure(),
         path="/",
     )
 
@@ -62,7 +62,13 @@ async def logout(
     if qh_session:
         await delete_session(db, qh_session)
         await db.commit()
-    response.delete_cookie(settings.session_cookie_name, path="/")
+    response.delete_cookie(
+        settings.session_cookie_name,
+        path="/",
+        httponly=True,
+        secure=settings.session_cookie_use_secure(),
+        samesite=settings.session_cookie_samesite,
+    )
     response.status_code = 204
     return response
 
